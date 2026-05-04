@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Listar Actividades</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        table { border-collapse: collapse; }
+        th, td { padding: 0.4rem 0.6rem; }
+    </style>
+</head>
+<body>
+    <h1>Actividades</h1>
+
+    <p><a href="/inicio/formulario">Nueva actividad</a></p>
+
+    <p th:if="${actividades.isEmpty()}">No hay actividades registradas.</p>
+
+    <table th:unless="${actividades.isEmpty()}" border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Tipo</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Terminación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="actividad : ${actividades}">
+                <td th:text="${actividad.id}"></td>
+                <td th:text="${actividad.titulo}"></td>
+                <td th:text="${actividad.tipoActividad}"></td>
+                <td th:text="${actividad.fechaInicio}"></td>
+                <td th:text="${actividad.fechaTerminacion}"></td>
+                <td>
+                    <a th:href="@{/inicio/ver/{id}(id=${actividad.id})}">Ver</a>
+                    |
+                    <a th:href="@{/inicio/editar/{id}(id=${actividad.id})}">Editar</a>
+                    |
+                    <a th:href="@{/inicio/eliminar/{id}(id=${actividad.id})}">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

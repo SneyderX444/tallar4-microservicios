@@ -1,0 +1,100 @@
+CONFIGURACIÓN DE BASE DE DATOS
+
+----------------------------------
+
+TIPO DE BD: H2 Database
+
+MODO: En memoria (no persistente)
+
+----------------------------------
+
+CREDENCIALES DE CONEXIÓN:
+
+----------------------------------
+
+URL de conexión:
+  jdbc:h2:mem:quehaceresdb
+
+Driver:
+  org.h2.Driver
+
+Usuario:
+  (Vacía)
+
+Contraseña:
+  (vacía)
+
+---------------------------------
+
+ACCESO DESDE NAVEGADOR:
+
+---------------------------------
+
+Consola web H2:
+  http://localhost:9000/h2-console
+
+Pasos para acceder:
+  1. Abrir http://localhost:9000/h2-console
+  2. JDBC URL: jdbc:h2:mem:quehaceresdb
+  3. User Name: (dejar vacío)
+  4. Password: (dejar vacío)
+  5. Click "Connect"
+
+--------------------------------------------
+
+CARACTERÍSTICAS:
+
+--------------------------------------------
+
+- MEMORIA: Los datos residen en RAM, no en disco
+- SIN PERSISTENCIA: Al apagar la aplicación, los datos desaparecen
+- SIN INSTALACIÓN: Incluida en Spring Boot
+- PEQUEÑA
+
+
+--------------------------------------------
+
+DATOS INICIALES:
+
+--------------------------------------------
+
+Al iniciar la aplicación:
+  1. Hibernate crea las tablas (ddl-auto=update)
+  2. Spring ejecuta src/main/resources/data.sql
+  3. Se insertan 7 actividades iniciales para testing
+
+
+--------------------------------------------
+
+TABLA PRINCIPAL:
+
+--------------------------------------------
+
+Tabla: actividades
+
+Columnas:
+  - id (BIGINT, PRIMARY KEY, AUTO_INCREMENT)
+  - titulo (VARCHAR, NOT NULL)
+  - descripcion (VARCHAR, NOT NULL)
+  - fecha_inicio (DATE)
+  - fecha_terminacion (DATE)
+  - tipo_actividad (VARCHAR, NOT NULL)
+  - id_quehacer (BIGINT)
+  - id_tutor (BIGINT)
+  - id_hijo (BIGINT)
+
+
+--------------------------------------------------
+
+CONFIGURACIÓN EN application.properties:
+
+--------------------------------------------------
+
+spring.datasource.url=jdbc:h2:mem:quehaceresdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=
+spring.datasource.password=
+spring.h2.console.enabled=true
+spring.h2.console.path=/h2-console
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true

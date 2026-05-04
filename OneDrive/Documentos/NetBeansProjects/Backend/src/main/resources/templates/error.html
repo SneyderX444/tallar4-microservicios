@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; max-width: 600px; }
+        .codigo { font-size: 4rem; color: #B8451F; margin: 0; }
+        .titulo { color: #1F2937; margin-top: 0; }
+        .mensaje {
+            background: #FEE2E2;
+            border-left: 4px solid #B91C1C;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0;
+            color: #7F1D1D;
+        }
+        a { color: #1E3A5F; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <p class="codigo" th:text="${codigo}">404</p>
+    <h1 class="titulo" th:text="${titulo}">Error</h1>
+    <div class="mensaje" th:text="${mensaje}">Mensaje del backend</div>
+    <p>
+        <a href="/inicio/listar">Volver al listado</a>
+    </p>
+</body>
+</html>

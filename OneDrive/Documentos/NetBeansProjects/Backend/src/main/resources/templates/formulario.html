@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Actividad</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        label { display: block; margin-top: 0.6rem; }
+        input[type="text"], input[type="number"], textarea, select, input[type="date"] { width: 320px; }
+        .error { color: #B91C1C; font-size: 0.85rem; display: block; margin-top: 0.2rem; }
+    </style>
+</head>
+<body>
+    <h1 th:text="${actividad.id} != null ? 'Editar Actividad' : 'Nueva Actividad'">Actividad</h1>
+
+    <form th:object="${actividad}"
+          th:action="${actividad.id} != null ? @{/inicio/actualizar/{id}(id=${actividad.id})} : @{/inicio/guardar}"
+          method="post">
+
+        <label>
+            Título:
+            <input type="text" th:field="*{titulo}" />
+            <span class="error" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></span>
+        </label>
+
+        <label>
+            Descripción:
+            <textarea th:field="*{descripcion}" rows="3"></textarea>
+            <span class="error" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></span>
+        </label>
+
+        <label>
+            Fecha de inicio:
+            <input type="date" th:field="*{fechaInicio}" />
+            <span class="error" th:if="${#fields.hasErrors('fechaInicio')}" th:errors="*{fechaInicio}"></span>
+        </label>
+
+        <label>
+            Fecha de terminación:
+            <input type="date" th:field="*{fechaTerminacion}" />
+            <span class="error" th:if="${#fields.hasErrors('fechaTerminacion')}" th:errors="*{fechaTerminacion}"></span>
+        </label>
+
+        <label>
+            Tipo de actividad:
+            <select th:field="*{tipoActividad}">
+                <option value="">-- Selecciona --</option>
+                <option value="Física">Física</option>
+                <option value="Acompañamiento">Acompañamiento</option>
+                <option value="Supervisión">Supervisión</option>
+                <option value="Creatividad">Creatividad</option>
+            </select>
+            <span class="error" th:if="${#fields.hasErrors('tipoActividad')}" th:errors="*{tipoActividad}"></span>
+        </label>
+
+        <label>
+            Id del quehacer:
+            <input type="number" th:field="*{idQuehacer}" min="1" />
+            <span class="error" th:if="${#fields.hasErrors('idQuehacer')}" th:errors="*{idQuehacer}"></span>
+        </label>
+
+        <label>
+            Id del tutor:
+            <input type="number" th:field="*{idTutor}" min="1" />
+            <span class="error" th:if="${#fields.hasErrors('idTutor')}" th:errors="*{idTutor}"></span>
+        </label>
+
+        <label>
+            Id del hijo:
+            <input type="number" th:field="*{idHijo}" min="1" />
+            <span class="error" th:if="${#fields.hasErrors('idHijo')}" th:errors="*{idHijo}"></span>
+        </label>
+
+        <p>
+            <button type="submit">Guardar</button>
+            <a href="/inicio/listar">Cancelar</a>
+        </p>
+    </form>
+</body>
+</html>

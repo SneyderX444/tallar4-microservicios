@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Actividad</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        table { border-collapse: collapse; }
+        th, td { padding: 0.4rem 0.6rem; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>Detalle de Actividad</h1>
+
+    <table border="1">
+        <tr><th>ID</th><td th:text="${actividad.id}"></td></tr>
+        <tr><th>Título</th><td th:text="${actividad.titulo}"></td></tr>
+        <tr><th>Descripción</th><td th:text="${actividad.descripcion}"></td></tr>
+        <tr><th>Tipo</th><td th:text="${actividad.tipoActividad}"></td></tr>
+        <tr><th>Fecha Inicio</th><td th:text="${actividad.fechaInicio}"></td></tr>
+        <tr><th>Fecha Terminación</th><td th:text="${actividad.fechaTerminacion}"></td></tr>
+        <tr><th>Quehacer</th><td th:text="${actividad.idQuehacer}"></td></tr>
+        <tr><th>Tutor</th><td th:text="${actividad.idTutor}"></td></tr>
+        <tr><th>Hijo a cargo</th><td th:text="${actividad.idHijo}"></td></tr>
+    </table>
+
+    <p>
+        <a href="/inicio/listar">Volver</a>
+    </p>
+</body>
+</html>
