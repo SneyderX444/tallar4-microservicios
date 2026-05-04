@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeTask Manager · Editar actividad</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+
+    <div class="app-layout">
+        <aside class="sidebar" role="navigation" aria-label="Menú lateral">
+            <div class="sidebar-brand">
+                <a href="index.html">🏠 <span>HomeTask</span></a>
+            </div>
+            <div class="sidebar-label">Menú</div>
+            <nav class="sidebar-nav">
+                <a href="actividades.html">
+                    <span class="nav-icon">📋</span> Actividades
+                </a>
+                <a href="formulario.html">
+                    <span class="nav-icon">➕</span> Nueva actividad
+                </a>
+            </nav>
+            <div class="sidebar-footer">Taller No. 4 · UD</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <h1 id="topbar-titulo">Editar actividad</h1>
+                <div class="topbar-actions">
+                    <a href="actividades.html" class="btn btn-secondary btn-sm">← Volver</a>
+                </div>
+            </header>
+
+            <main id="main" class="page-content">
+                <div id="msg-global"></div>
+                <div id="form-container"></div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        var params = new URLSearchParams(window.location.search);
+        var id     = params.get('id');
+        var cont   = document.getElementById('form-container');
+        var msgG   = document.getElementById('msg-global');
+
+        function mostrarError(txt) {
+            msgG.innerHTML =
+                '<div class="msg error" role="alert">' +
+                    '<span class="msg-icon">✕</span>' +
+                    '<div><strong>Error</strong> ' + txt + '</div>' +
+                '</div>';
+        }
+
+        function esc(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                            .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        if (!id) {
+            mostrarError('No se especificó un ID.');
+        } else {
+            var act = API.getActividadById(id);
+            if (!act) {
+                mostrarError('Actividad #' + id + ' no encontrada (404).');
+            } else {
+                document.getElementById('topbar-titulo').textContent = 'Editar — #' + act.id;
+
+                cont.innerHTML =
+                    '<div class="card" style="max-width:760px">' +
+                        '<div class="card-header">' +
+                            '<span class="card-title">Modificar actividad #' + act.id + '</span>' +
+                            '<span style="font-size:.8rem;color:var(--text-muted)">Simula PUT /actividad/' + act.id + '</span>' +
+                        '</div>' +
+                        '<div class="form-grid">' +
+                            '<div class="form-field full">' +
+                                '<label for="titulo">Título <span class="req">*</span></label>' +
+                                '<input type="text" id="titulo" value="' + esc(act.titulo) + '" aria-describedby="titulo-err">' +
+                                '<span id="titulo-err" class="field-error" role="alert"></span>' +
+                            '</div>' +
+                            '<div class="form-field full">' +
+                                '<label for="descripcion">Descripción <span class="req">*</span></label>' +
+                                '<textarea id="descripcion" aria-describedby="desc-err">' + esc(act.descripcion) + '</textarea>' +
+                                '<span id="desc-err" class="field-error" role="alert"></span>' +
+                            '</div>' +
+                            '<div class="form-field">' +
+                                '<label for="fechaInicio">Fecha de inicio <span class="req">*</span></label>' +
+                                '<input type="date" id="fechaInicio" value="' + act.fechaInicio + '" aria-describedby="fi-err">' +
+                                '<span id="fi-err" class="field-error" role="alert"></span>' +
+                            '</div>' +
+                            '<div class="form-field">' +
+                                '<label for="fechaTerminacion">Fecha de terminación <span class="req">*</span></label>' +
+                                '<input type="date" id="fechaTerminacion" value="' + act.fechaTerminacion + '" aria-describedby="ft-err">' +
+                                '<span id="ft-err" class="field-error" role="alert"></span>' +
+                            '</div>' +
+                            '<div class="form-field">' +
+                                '<label for="tipoActividad">Tipo de actividad <span class="req">*</span></label>' +
+                                '<select id="tipoActividad" aria-describedby="tipo-err">' +
+                                    '<option value="Física"' + (act.tipoActividad==='Física'?' selected':'') + '>Física</option>' +
+                                    '<option value="Acompañamiento"' + (act.tipoActividad==='Acompañamiento'?' selected':'') + '>Acompañamiento</option>' +
+                                    '<option value="Supervisión"' + (act.tipoActividad==='Supervisión'?' selected':'') + '>Supervisión</option>' +
+                                    '<option value="Creativa"' + (act.tipoActividad==='Creativa'?' selected':'') + '>Creativa</option>' +
+                                '</select>' +
+                                '<span id="tipo-err" class="field-error" role="alert"></span>' +
+                            '</div>' +
+                            '<div class="form-field">' +
+                                '<label for="idQuehacer">ID Quehacer</label>' +
+                                '<input type="number" id="idQuehacer" value="' + act.idQuehacer + '" min="1">' +
+                            '</div>' +
+                            '<div class="form-field">' +
+                                '<label for="idTutor">ID Tutor</label>' +
+                                '<input type="number" id="idTutor" value="' + act.idTutor + '" min="1">' +
+                            '</div>' +
+                            '<div class="form-field">' +
+                                '<label for="idHijo">ID Hijo</label>' +
+                                '<input type="number" id="idHijo" value="' + act.idHijo + '" min="1">' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="form-actions">' +
+                            '<button type="button" id="btn-guardar" class="btn btn-primary">💾 Guardar cambios</button>' +
+                            '<a href="actividades.html" class="btn btn-secondary">Cancelar</a>' +
+                        '</div>' +
+                        '<p class="demo-notice"><strong>Modo demo:</strong> simula PUT /actividad/' + act.id + '</p>' +
+                    '</div>';
+
+                document.getElementById('btn-guardar').addEventListener('click', function () {
+                    var ok = true;
+
+                    function validar(fieldId, errId, msg) {
+                        var el  = document.getElementById(fieldId);
+                        var err = document.getElementById(errId);
+                        if (!el.value.trim()) {
+                            err.textContent = msg; err.classList.add('visible'); ok = false;
+                        } else {
+                            err.textContent = ''; err.classList.remove('visible');
+                        }
+                    }
+
+                    validar('titulo',           'titulo-err', 'El título es obligatorio.');
+                    validar('descripcion',      'desc-err',   'La descripción es obligatoria.');
+                    validar('fechaInicio',      'fi-err',     'La fecha de inicio es obligatoria.');
+                    validar('fechaTerminacion', 'ft-err',     'La fecha de terminación es obligatoria.');
+                    validar('tipoActividad',    'tipo-err',   'Selecciona un tipo.');
+
+                    var fi = document.getElementById('fechaInicio').value;
+                    var ft = document.getElementById('fechaTerminacion').value;
+                    if (fi && ft && ft < fi) {
+                        var ftErr = document.getElementById('ft-err');
+                        ftErr.textContent = 'La fecha de término no puede ser anterior a la de inicio.';
+                        ftErr.classList.add('visible');
+                        ok = false;
+                    }
+
+                    if (!ok) return;
+
+                    API.actualizarActividad(id, {
+                        titulo:           document.getElementById('titulo').value.trim(),
+                        descripcion:      document.getElementById('descripcion').value.trim(),
+                        fechaInicio:      fi,
+                        fechaTerminacion: ft,
+                        tipoActividad:    document.getElementById('tipoActividad').value,
+                        idQuehacer:       document.getElementById('idQuehacer').value,
+                        idTutor:          document.getElementById('idTutor').value,
+                        idHijo:           document.getElementById('idHijo').value
+                    });
+
+                    msgG.innerHTML =
+                        '<div class="msg success" role="alert">' +
+                            '<span class="msg-icon">✓</span>' +
+                            '<div><strong>Actividad actualizada</strong> — Cambios guardados. Redirigiendo…</div>' +
+                        '</div>';
+
+                    setTimeout(function () { window.location.href = 'actividades.html'; }, 1200);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeTask Manager · Nueva actividad</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+
+    <div class="app-layout">
+        <aside class="sidebar" role="navigation" aria-label="Menú lateral">
+            <div class="sidebar-brand">
+                <a href="index.html">🏠 <span>HomeTask</span></a>
+            </div>
+            <div class="sidebar-label">Menú</div>
+            <nav class="sidebar-nav">
+                <a href="actividades.html">
+                    <span class="nav-icon">📋</span> Actividades
+                </a>
+                <a href="formulario.html" class="active" aria-current="page">
+                    <span class="nav-icon">➕</span> Nueva actividad
+                </a>
+            </nav>
+            <div class="sidebar-footer">Taller No. 4 · UD</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <h1>Nueva actividad</h1>
+                <div class="topbar-actions">
+                    <a href="actividades.html" class="btn btn-secondary btn-sm">← Volver</a>
+                </div>
+            </header>
+
+            <main id="main" class="page-content">
+                <div id="msg-global"></div>
+
+                <div class="card" style="max-width:760px">
+                    <div class="card-header">
+                        <span class="card-title">Registrar actividad</span>
+                        <span style="font-size:.8rem;color:var(--text-muted)">Simula POST /actividad/insertar</span>
+                    </div>
+
+                    <div id="form-area">
+                        <div class="form-grid">
+                            <!-- Título -->
+                            <div class="form-field full">
+                                <label for="titulo">Título <span class="req" aria-label="obligatorio">*</span></label>
+                                <input type="text" id="titulo" name="titulo"
+                                       placeholder="Ej. Planchar la ropa"
+                                       aria-describedby="titulo-error" autocomplete="off">
+                                <span id="titulo-error" class="field-error" role="alert"></span>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="form-field full">
+                                <label for="descripcion">Descripción <span class="req" aria-label="obligatorio">*</span></label>
+                                <textarea id="descripcion" name="descripcion"
+                                          placeholder="Describe la actividad con detalle…"
+                                          aria-describedby="desc-error"></textarea>
+                                <span id="desc-error" class="field-error" role="alert"></span>
+                            </div>
+
+                            <!-- Fecha inicio -->
+                            <div class="form-field">
+                                <label for="fechaInicio">Fecha de inicio <span class="req" aria-label="obligatorio">*</span></label>
+                                <input type="date" id="fechaInicio" name="fechaInicio"
+                                       aria-describedby="fi-error">
+                                <span id="fi-error" class="field-error" role="alert"></span>
+                            </div>
+
+                            <!-- Fecha término -->
+                            <div class="form-field">
+                                <label for="fechaTerminacion">Fecha de terminación <span class="req" aria-label="obligatorio">*</span></label>
+                                <input type="date" id="fechaTerminacion" name="fechaTerminacion"
+                                       aria-describedby="ft-error">
+                                <span id="ft-error" class="field-error" role="alert"></span>
+                            </div>
+
+                            <!-- Tipo -->
+                            <div class="form-field">
+                                <label for="tipoActividad">Tipo de actividad <span class="req" aria-label="obligatorio">*</span></label>
+                                <select id="tipoActividad" name="tipoActividad"
+                                        aria-describedby="tipo-error">
+                                    <option value="">— Selecciona un tipo —</option>
+                                    <option value="Física">Física</option>
+                                    <option value="Acompañamiento">Acompañamiento</option>
+                                    <option value="Supervisión">Supervisión</option>
+                                    <option value="Creativa">Creativa</option>
+                                </select>
+                                <span id="tipo-error" class="field-error" role="alert"></span>
+                            </div>
+
+                            <!-- IDs opcionales -->
+                            <div class="form-field">
+                                <label for="idQuehacer">ID Quehacer</label>
+                                <input type="number" id="idQuehacer" name="idQuehacer" min="1" placeholder="1">
+                            </div>
+                            <div class="form-field">
+                                <label for="idTutor">ID Tutor</label>
+                                <input type="number" id="idTutor" name="idTutor" min="1" placeholder="100">
+                            </div>
+                            <div class="form-field">
+                                <label for="idHijo">ID Hijo</label>
+                                <input type="number" id="idHijo" name="idHijo" min="1" placeholder="200">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="btn-guardar" class="btn btn-primary">✅ Guardar actividad</button>
+                            <a href="actividades.html" class="btn btn-secondary">Cancelar</a>
+                        </div>
+
+                        <p class="demo-notice">
+                            <strong>Modo demo:</strong> los datos se guardan en memoria. Simula POST /actividad/insertar.
+                        </p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('btn-guardar').addEventListener('click', function () {
+            var ok = true;
+
+            function validar(id, errId, msg) {
+                var el  = document.getElementById(id);
+                var err = document.getElementById(errId);
+                if (!el.value.trim()) {
+                    err.textContent = msg;
+                    err.classList.add('visible');
+                    ok = false;
+                } else {
+                    err.textContent = '';
+                    err.classList.remove('visible');
+                }
+            }
+
+            validar('titulo',           'titulo-error', 'El título es obligatorio.');
+            validar('descripcion',      'desc-error',   'La descripción es obligatoria.');
+            validar('fechaInicio',      'fi-error',     'La fecha de inicio es obligatoria.');
+            validar('fechaTerminacion', 'ft-error',     'La fecha de terminación es obligatoria.');
+            validar('tipoActividad',    'tipo-error',   'Selecciona un tipo de actividad.');
+
+            var fi = document.getElementById('fechaInicio').value;
+            var ft = document.getElementById('fechaTerminacion').value;
+            if (fi && ft && ft < fi) {
+                var ftErr = document.getElementById('ft-error');
+                ftErr.textContent = 'La fecha de término no puede ser anterior a la de inicio.';
+                ftErr.classList.add('visible');
+                ok = false;
+            }
+
+            if (!ok) return;
+
+            var nueva = API.crearActividad({
+                titulo:           document.getElementById('titulo').value.trim(),
+                descripcion:      document.getElementById('descripcion').value.trim(),
+                fechaInicio:      fi,
+                fechaTerminacion: ft,
+                tipoActividad:    document.getElementById('tipoActividad').value,
+                idQuehacer:       document.getElementById('idQuehacer').value || 0,
+                idTutor:          document.getElementById('idTutor').value || 0,
+                idHijo:           document.getElementById('idHijo').value || 0
+            });
+
+            var msg = document.getElementById('msg-global');
+            msg.innerHTML =
+                '<div class="msg success" role="alert">' +
+                    '<span class="msg-icon">✓</span>' +
+                    '<div><strong>Actividad creada</strong> — #' + nueva.id + ' "' + nueva.titulo + '" registrada correctamente. Redirigiendo…</div>' +
+                '</div>';
+
+            setTimeout(function () {
+                window.location.href = 'actividades.html';
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

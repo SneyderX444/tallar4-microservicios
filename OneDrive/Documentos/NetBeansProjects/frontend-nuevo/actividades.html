@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeTask Manager · Actividades</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+
+    <div class="app-layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar" role="navigation" aria-label="Menú lateral">
+            <div class="sidebar-brand">
+                <a href="index.html">🏠 <span>HomeTask</span></a>
+            </div>
+            <div class="sidebar-label">Menú</div>
+            <nav class="sidebar-nav">
+                <a href="actividades.html" class="active" aria-current="page">
+                    <span class="nav-icon">📋</span> Actividades
+                </a>
+                <a href="formulario.html">
+                    <span class="nav-icon">➕</span> Nueva actividad
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                Taller No. 4 · UD
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="main-area">
+            <header class="topbar">
+                <h1>Actividades</h1>
+                <div class="topbar-actions">
+                    <a href="formulario.html" class="btn btn-primary btn-sm">+ Nueva actividad</a>
+                </div>
+            </header>
+
+            <main id="main" class="page-content">
+                <div id="msg-area"></div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Lista de actividades</span>
+                        <span id="total-badge" style="font-size:.85rem;color:var(--text-muted)"></span>
+                    </div>
+
+                    <div class="table-wrapper" role="region" aria-label="Tabla de actividades" tabindex="0">
+                        <table aria-describedby="tabla-desc">
+                            <caption id="tabla-desc" class="sr-only" style="position:absolute;left:-9999px">
+                                Listado completo de actividades del hogar
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Título</th>
+                                    <th scope="col">Tipo</th>
+                                    <th scope="col">Fecha inicio</th>
+                                    <th scope="col">Fecha término</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-body">
+                                <tr>
+                                    <td colspan="6" style="text-align:center;padding:2rem;color:var(--text-muted)">
+                                        Cargando actividades…
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="empty-state" class="empty-state" hidden>
+                        <div class="empty-icon">📭</div>
+                        <h3>Sin actividades</h3>
+                        <p>No hay actividades registradas. <a href="formulario.html">Crea la primera</a>.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var tbody  = document.getElementById('tabla-body');
+            var empty  = document.getElementById('empty-state');
+            var total  = document.getElementById('total-badge');
+
+            var actividades = API.getActividades();
+
+            if (actividades.length === 0) {
+                tbody.innerHTML = '';
+                empty.hidden = false;
+                total.textContent = '0 actividades';
+                return;
+            }
+
+            total.textContent = actividades.length + ' actividad' + (actividades.length !== 1 ? 'es' : '');
+
+            var filas = actividades.map(function (a) {
+                var cls = API.badgeClass(a.tipoActividad);
+                return '<tr>' +
+                    '<td><strong>#' + a.id + '</strong></td>' +
+                    '<td>' + escHtml(a.titulo) + '</td>' +
+                    '<td><span class="badge ' + cls + '">' + escHtml(a.tipoActividad) + '</span></td>' +
+                    '<td>' + a.fechaInicio + '</td>' +
+                    '<td>' + a.fechaTerminacion + '</td>' +
+                    '<td class="td-actions">' +
+                        '<a href="detalle.html?id=' + a.id + '" class="btn btn-secondary btn-sm" aria-label="Ver actividad ' + escHtml(a.titulo) + '">👁 Ver</a>' +
+                        '<a href="editar.html?id=' + a.id + '" class="btn btn-primary btn-sm" aria-label="Editar actividad ' + escHtml(a.titulo) + '">✏️ Editar</a>' +
+                        '<a href="eliminar.html?id=' + a.id + '" class="btn btn-danger btn-sm" aria-label="Eliminar actividad ' + escHtml(a.titulo) + '">🗑 Eliminar</a>' +
+                    '</td>' +
+                '</tr>';
+            }).join('');
+
+            tbody.innerHTML = filas;
+        });
+
+        function escHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

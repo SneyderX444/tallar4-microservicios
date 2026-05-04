@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeTask Manager · Detalle</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+
+    <div class="app-layout">
+        <aside class="sidebar" role="navigation" aria-label="Menú lateral">
+            <div class="sidebar-brand">
+                <a href="index.html">🏠 <span>HomeTask</span></a>
+            </div>
+            <div class="sidebar-label">Menú</div>
+            <nav class="sidebar-nav">
+                <a href="actividades.html">
+                    <span class="nav-icon">📋</span> Actividades
+                </a>
+                <a href="formulario.html">
+                    <span class="nav-icon">➕</span> Nueva actividad
+                </a>
+            </nav>
+            <div class="sidebar-footer">Taller No. 4 · UD</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <h1>Detalle de actividad</h1>
+                <div class="topbar-actions">
+                    <a href="actividades.html" class="btn btn-secondary btn-sm">← Volver</a>
+                </div>
+            </header>
+
+            <main id="main" class="page-content">
+                <div id="msg-area"></div>
+                <div id="contenido"></div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var params = new URLSearchParams(window.location.search);
+            var id     = params.get('id');
+            var area   = document.getElementById('contenido');
+            var msg    = document.getElementById('msg-area');
+
+            if (!id) {
+                mostrarError(msg, 'No se especificó un ID de actividad.');
+                return;
+            }
+
+            var act = API.getActividadById(id);
+
+            if (!act) {
+                mostrarError(msg, 'Actividad #' + id + ' no encontrada (404).');
+                return;
+            }
+
+            var cls = API.badgeClass(act.tipoActividad);
+
+            area.innerHTML =
+                '<article class="detail-card" aria-labelledby="act-titulo">' +
+                    '<span class="badge ' + cls + '">' + esc(act.tipoActividad) + '</span>' +
+                    '<h2 class="detail-title" id="act-titulo">' + esc(act.titulo) + '</h2>' +
+                    '<p class="detail-desc">' + esc(act.descripcion) + '</p>' +
+                    '<dl class="detail-grid">' +
+                        '<dt>ID</dt><dd>#' + act.id + '</dd>' +
+                        '<dt>Fecha inicio</dt><dd>' + act.fechaInicio + '</dd>' +
+                        '<dt>Fecha término</dt><dd>' + act.fechaTerminacion + '</dd>' +
+                        '<dt>ID quehacer</dt><dd>' + act.idQuehacer + '</dd>' +
+                        '<dt>ID tutor</dt><dd>' + act.idTutor + '</dd>' +
+                        '<dt>ID hijo</dt><dd>' + act.idHijo + '</dd>' +
+                    '</dl>' +
+                    '<div class="form-actions" style="margin-top:1.5rem">' +
+                        '<a href="editar.html?id=' + act.id + '" class="btn btn-primary">✏️ Editar</a>' +
+                        '<a href="actividades.html" class="btn btn-secondary">← Volver</a>' +
+                    '</div>' +
+                '</article>';
+        });
+
+        function mostrarError(el, texto) {
+            el.innerHTML =
+                '<div class="msg error" role="alert">' +
+                    '<span class="msg-icon">✕</span>' +
+                    '<div><strong>Error</strong> ' + texto + '</div>' +
+                '</div>';
+        }
+
+        function esc(str) {
+            return String(str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+</html>

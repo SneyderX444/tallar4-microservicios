@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeTask Manager · Eliminar actividad</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <a href="#main" class="skip-link">Saltar al contenido</a>
+
+    <div class="app-layout">
+        <aside class="sidebar" role="navigation" aria-label="Menú lateral">
+            <div class="sidebar-brand">
+                <a href="index.html">🏠 <span>HomeTask</span></a>
+            </div>
+            <div class="sidebar-label">Menú</div>
+            <nav class="sidebar-nav">
+                <a href="actividades.html">
+                    <span class="nav-icon">📋</span> Actividades
+                </a>
+                <a href="formulario.html">
+                    <span class="nav-icon">➕</span> Nueva actividad
+                </a>
+            </nav>
+            <div class="sidebar-footer">Taller No. 4 · UD</div>
+        </aside>
+
+        <div class="main-area">
+            <header class="topbar">
+                <h1>Eliminar actividad</h1>
+                <div class="topbar-actions">
+                    <a href="actividades.html" class="btn btn-secondary btn-sm">← Volver</a>
+                </div>
+            </header>
+
+            <main id="main" class="page-content">
+                <div id="msg-global"></div>
+                <div id="contenido"></div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        var params = new URLSearchParams(window.location.search);
+        var id     = params.get('id');
+        var cont   = document.getElementById('contenido');
+        var msgG   = document.getElementById('msg-global');
+
+        function esc(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                            .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        if (!id) {
+            msgG.innerHTML =
+                '<div class="msg error" role="alert"><span class="msg-icon">✕</span>' +
+                '<div><strong>Error</strong> No se especificó un ID.</div></div>';
+        } else {
+            var act = API.getActividadById(id);
+
+            if (!act) {
+                msgG.innerHTML =
+                    '<div class="msg error" role="alert"><span class="msg-icon">✕</span>' +
+                    '<div><strong>Error 404</strong> Actividad #' + id + ' no encontrada.</div></div>';
+            } else {
+                var cls = API.badgeClass(act.tipoActividad);
+
+                cont.innerHTML =
+                    '<div class="card" style="max-width:640px">' +
+                        '<div class="confirm-box" role="alert">' +
+                            '<span style="font-size:1.4rem">⚠️</span>' +
+                            '<span>¿Estás seguro de eliminar esta actividad? Esta acción no se puede deshacer.</span>' +
+                        '</div>' +
+
+                        '<article class="detail-card" style="margin-bottom:1.5rem;box-shadow:none;border:1px solid var(--border)">' +
+                            '<span class="badge ' + cls + '">' + esc(act.tipoActividad) + '</span>' +
+                            '<h2 class="detail-title" style="font-size:1.4rem">' + esc(act.titulo) + '</h2>' +
+                            '<p class="detail-desc">' + esc(act.descripcion) + '</p>' +
+                            '<dl class="detail-grid">' +
+                                '<dt>ID</dt><dd>#' + act.id + '</dd>' +
+                                '<dt>Fecha inicio</dt><dd>' + act.fechaInicio + '</dd>' +
+                                '<dt>Fecha término</dt><dd>' + act.fechaTerminacion + '</dd>' +
+                            '</dl>' +
+                        '</article>' +
+
+                        '<div class="form-actions">' +
+                            '<button type="button" id="btn-eliminar" class="btn btn-danger">🗑 Sí, eliminar</button>' +
+                            '<a href="actividades.html" class="btn btn-secondary">Cancelar</a>' +
+                        '</div>' +
+                        '<p class="demo-notice"><strong>Modo demo:</strong> simula DELETE /actividad/' + act.id + '</p>' +
+                    '</div>';
+
+                document.getElementById('btn-eliminar').addEventListener('click', function () {
+                    var resultado = API.eliminarActividad(id);
+                    if (resultado) {
+                        msgG.innerHTML =
+                            '<div class="msg success" role="alert">' +
+                                '<span class="msg-icon">✓</span>' +
+                                '<div><strong>Actividad eliminada</strong> — #' + id + ' removida correctamente. Redirigiendo…</div>' +
+                            '</div>';
+                        cont.innerHTML = '';
+                        setTimeout(function () { window.location.href = 'actividades.html'; }, 1200);
+                    } else {
+                        msgG.innerHTML =
+                            '<div class="msg error" role="alert">' +
+                                '<span class="msg-icon">✕</span>' +
+                                '<div><strong>Error</strong> No se pudo eliminar la actividad.</div>' +
+                            '</div>';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
